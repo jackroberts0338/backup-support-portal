@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, Clock, CheckCircle, AlertCircle, LogOut, Plus, Eye, EyeOff, MessageSquare, Send } from 'lucide-react';
+import { FileText, Clock, CheckCircle, AlertCircle, LogOut, Plus, Eye, EyeOff, MessageSquare, Send, Home } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Ticket {
@@ -177,6 +177,13 @@ export default function CustomerDashboard() {
               >
                 <Plus className="h-4 w-4" />
                 <span>New Ticket</span>
+              </button>
+              <button
+                onClick={() => router.push('/')}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+              >
+                <Home className="h-5 w-5" />
+                <span>Home</span>
               </button>
               <button
                 onClick={handleLogout}
