@@ -122,9 +122,11 @@ export default function HomePage() {
             When primary systems are down, we're here to help with seamless failover support.
           </p>
           <div className="flex justify-center space-x-4">
-            <Link href="/submit-ticket" className="btn-primary text-lg px-8 py-3">
-              Submit Support Ticket
-            </Link>
+            {isLoggedIn && (
+              <Link href="/submit-ticket" className="btn-primary text-lg px-8 py-3">
+                Submit Support Ticket
+              </Link>
+            )}
             <Link href="/tickets" className="btn-secondary text-lg px-8 py-3">
               Check Ticket Status
             </Link>
