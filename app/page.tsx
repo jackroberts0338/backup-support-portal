@@ -2,18 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { AlertTriangle, Shield, Headphones, FileText, Users, Settings } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { AlertTriangle, Shield, Headphones, FileText, Users, Settings, LogOut } from 'lucide-react';
 
 export default function HomePage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState('customer')
   const [systemStatus, setSystemStatus] = useState({
     primarySystem: 'online',
     failoverActivated: false,
     lastUpdated: new Date().toISOString()
   });
+  const router = useRouter();
 
   useEffect(() => {
     // Fetch system status
     fetchSystemStatus();
+    
+    if (localStorage.getItem('token')) {
+      setIsLoggedIn(true);
+    }
+    
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserRole(user.role);
+    }
   }, []);
 
   const fetchSystemStatus = async () => {
@@ -28,6 +42,12 @@ export default function HomePage() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/login');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Header */}
@@ -39,12 +59,38 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-gray-900">Backup Support Portal</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/login" className="btn-primary">
-                Login
-              </Link>
-              <Link href="/register" className="btn-secondary">
-                Register
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <Link 
+                    href={
+                      userRole === 'admin' 
+                        ? "/admin/dashboard"
+                        : userRole === 'agent' 
+                          ? "/agent/dashboard"
+                          : "/dashboard"
+                    } 
+                    className="btn-primary"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span>Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="btn-primary">
+                    Login
+                  </Link>
+                  <Link href="/register" className="btn-secondary">
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
